@@ -1,10 +1,18 @@
 spring:
-  config:
-    activate:
-      on-profile: dev
+  profiles.active: 'dev'
+  application:
+    name: account-service
+  data.mongodb:
+    host: 'localhost'
+    port: 27017
+    database: 'mainDb'
+    uri: 'mongodb://localhost:27017/mainDb'
 
 server:
-  port: 8080
+  port: 8501
+  compression:
+    enabled: true
+    mime-types: application/json
 
 # logging
 logging:
