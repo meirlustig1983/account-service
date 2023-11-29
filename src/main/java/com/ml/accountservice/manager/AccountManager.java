@@ -7,7 +7,7 @@ import com.ml.accountservice.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Component
@@ -25,11 +25,18 @@ public class AccountManager {
 
     public AccountInfo createAccount(AccountInfo accountInfo) {
         Account account = mapper.toAccount(accountInfo);
+        account.setCreationDate(LocalDateTime.now());
         Optional<Account> optional = service.save(account);
         return optional.map(mapper::toAccountInfo).orElse(null);
     }
 
-    public List<AccountInfo> getAll() {
-        return service.getAll().stream().map(mapper::toAccountInfo).toList();
+    public AccountInfo getAccountByEmail(String email) {
+        Optional<Account> optional = service.getAccountByEmail(email);
+        return optional.map(mapper::toAccountInfo).orElse(null);
+    }
+
+    public AccountInfo getAccountByPhoneNumber(String phoneNumber) {
+        Optional<Account> optional = service.getAccountByPhoneNumber(phoneNumber);
+        return optional.map(mapper::toAccountInfo).orElse(null);
     }
 }

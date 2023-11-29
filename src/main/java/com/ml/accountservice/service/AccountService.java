@@ -8,7 +8,6 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,20 +23,24 @@ public class AccountService {
     @CacheEvict(value = "accounts", allEntries = true)
     @CachePut(value = "account", key = "#account.email")
     public Optional<Account> save(Account account) {
-        return Optional.of(repository.save(account));
-    }
-
-    @Cacheable(value = "account", key = "#phoneNumber", unless = "#result == null")
-    public Optional<Account> getAccountByPhoneNumber(String phoneNumber) {
-        return Optional.of(repository.findByPhoneNumber(phoneNumber));
+        return optional(repository.save(account));
     }
 
     @Cacheable(value = "account", key = "#email", unless = "#result == null")
     public Optional<Account> getAccountByEmail(String email) {
-        return Optional.of(repository.findByEmail(email));
+        return optional(repository.findAccountByEmail(email));
     }
 
-    public List<Account> getAll() {
-        return repository.findAll();
+    @Cacheable(value = "account", key = "#phoneNumber", unless = "#result == null")
+    public Optional<Account> getAccountByPhoneNumber(String phoneNumber) {
+        return optional(repository.findAccountByPhoneNumber(phoneNumber));
+    }
+
+    private Optional<Account> optional(Account account) {
+        if (account != null) {
+            return Optional.of(account);
+        } else {
+            return Optional.empty();
+        }
     }
 }
