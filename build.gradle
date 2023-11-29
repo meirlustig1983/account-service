@@ -27,13 +27,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
 
+//    implementation 'org.mongodb:mongodb-driver-core:3.12.10'
+
     implementation 'org.mapstruct:mapstruct:1.5.3.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-
-    implementation 'org.mongodb:mongo-java-driver:3.12.12'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

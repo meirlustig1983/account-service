@@ -1,12 +1,14 @@
 spring:
-  profiles.active: 'dev'
+  profiles:
+    active: 'dev'
   application:
     name: account-service
-  data.mongodb:
-    host: 'localhost'
-    port: 27017
-    database: 'mainDb'
-    uri: 'mongodb://localhost:27017/mainDb'
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: mainDb
+      uri: mongodb://localhost:27017/mainDb
 
 server:
   port: 8501

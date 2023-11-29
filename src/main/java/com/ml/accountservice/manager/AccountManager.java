@@ -7,6 +7,7 @@ import com.ml.accountservice.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,7 @@ public class AccountManager {
 
     public AccountInfo createAccount(AccountInfo accountInfo) {
         Account account = mapper.toAccount(accountInfo);
+        account.setCreationDate(LocalDateTime.now());
         Optional<Account> optional = service.save(account);
         return optional.map(mapper::toAccountInfo).orElse(null);
     }
