@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,5 +35,9 @@ public class AccountService {
     @Cacheable(value = "account", key = "#email", unless = "#result == null")
     public Optional<Account> getAccountByEmail(String email) {
         return Optional.of(repository.findByEmail(email));
+    }
+
+    public List<Account> getAll() {
+        return repository.findAll();
     }
 }
