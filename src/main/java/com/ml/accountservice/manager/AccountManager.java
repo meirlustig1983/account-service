@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -31,7 +30,13 @@ public class AccountManager {
         return optional.map(mapper::toAccountInfo).orElse(null);
     }
 
-    public List<AccountInfo> getAll() {
-        return service.getAll().stream().map(mapper::toAccountInfo).toList();
+    public AccountInfo getAccountByEmail(String email) {
+        Optional<Account> optional = service.getAccountByEmail(email);
+        return optional.map(mapper::toAccountInfo).orElse(null);
+    }
+
+    public AccountInfo getAccountByPhoneNumber(String phoneNumber) {
+        Optional<Account> optional = service.getAccountByPhoneNumber(phoneNumber);
+        return optional.map(mapper::toAccountInfo).orElse(null);
     }
 }

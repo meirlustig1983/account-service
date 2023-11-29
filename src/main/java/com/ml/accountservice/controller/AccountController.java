@@ -1,12 +1,11 @@
 package com.ml.accountservice.controller;
 
 import com.ml.accountservice.dto.AccountInfo;
+import com.ml.accountservice.dto.AccountRequest;
 import com.ml.accountservice.manager.AccountManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/account")
@@ -17,16 +16,6 @@ public class AccountController {
     @Autowired
     public AccountController(AccountManager manager) {
         this.manager = manager;
-    }
-
-    @GetMapping("/get-all")
-    public ResponseEntity<List<AccountInfo>> getAll() {
-        List<AccountInfo> accounts = manager.getAll();
-        if (accounts != null) {
-            return ResponseEntity.ok(accounts);
-        } else {
-            throw new IllegalStateException("failed to get all accounts data");
-        }
     }
 
     @PostMapping("/registration")
@@ -40,5 +29,18 @@ public class AccountController {
         }
     }
 
+    @GetMapping
+    public ResponseEntity<AccountInfo> getAccount(@RequestBody AccountRequest request) {
+        AccountInfo account = null;
+        switch (request.field()) {
+            case EMAIL -> account = manager.getAccountByEmail(request.value());
+            case PHONE_NUMBER -> account = manager.getAccountByPhoneNumber(request.value());
+        }
 
+        if (account != null) {
+            return ResponseEntity.ok(account);
+        } else {
+            throw new IllegalStateException("failed to get account data");
+        }
+    }
 }
