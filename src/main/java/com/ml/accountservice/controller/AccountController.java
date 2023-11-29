@@ -2,6 +2,8 @@ package com.ml.accountservice.controller;
 
 import com.ml.accountservice.dto.AccountInfo;
 import com.ml.accountservice.dto.AccountRequest;
+import com.ml.accountservice.exceptions.CreationDataException;
+import com.ml.accountservice.exceptions.InternalServerException;
 import com.ml.accountservice.manager.AccountManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +27,7 @@ public class AccountController {
         if (updatedAccountInfo != null) {
             return ResponseEntity.ok(updatedAccountInfo);
         } else {
-            throw new IllegalStateException("failed to save account data");
+            throw new CreationDataException();
         }
     }
 
@@ -40,7 +42,7 @@ public class AccountController {
         if (account != null) {
             return ResponseEntity.ok(account);
         } else {
-            throw new IllegalStateException("failed to get account data");
+            throw new InternalServerException();
         }
     }
 }
