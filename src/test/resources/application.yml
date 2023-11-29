@@ -1,0 +1,26 @@
+spring:
+  profiles:
+    active: 'test'
+  application:
+    name: account-service
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: testDb
+      uri: mongodb://localhost:27017/testDb
+
+server:
+  port: 8511
+  compression:
+    enabled: true
+    mime-types: application/json
+
+# logging
+logging:
+  level:
+    root: INFO
+    org:
+      springframework:
+        web: INFO
+        security: INFO
