@@ -7,6 +7,7 @@ import com.ml.accountservice.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -26,5 +27,9 @@ public class AccountManager {
         Account account = mapper.toAccount(accountInfo);
         Optional<Account> optional = service.save(account);
         return optional.map(mapper::toAccountInfo).orElse(null);
+    }
+
+    public List<AccountInfo> getAll() {
+        return service.getAll().stream().map(mapper::toAccountInfo).toList();
     }
 }
