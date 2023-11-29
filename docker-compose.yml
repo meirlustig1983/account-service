@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+
+  mongodb:
+    image: 'mongo:latest'
+    networks:
+      - dev-env
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: echo 'db.stats().ok' | mongo localhost:27017/mydbname -u myuser -p mypassword --quiet --authenticationDatabase admin
+      interval: 30s
+      timeout: 10s
+      retries: 50
+    volumes:
+      - mongodata:/data/db
+
+
+  redis:
+    image: 'redis:latest'
+    networks:
+      - dev-env
+    ports:
+      - "6379:6379"
+
+volumes:
+  mongodata:
+
+networks:
+  dev-env:
+    driver: 'bridge'
