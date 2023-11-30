@@ -2,27 +2,18 @@ package com.ml.accountservice.mapper;
 
 import com.ml.accountservice.dto.AccountInfo;
 import com.ml.accountservice.model.Account;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
-@Component
-public class AccountMapper {
+@Mapper
+public interface AccountMapper {
 
+    AccountMapper INSTANCE = Mappers.getMapper(AccountMapper.class);
 
-    public AccountInfo toAccountInfo(Account account) {
-        return new AccountInfo()
-                .setFirstName(account.getFirstName())
-                .setLastName(account.getLastName())
-                .setEmail(account.getEmail())
-                .setPhoneNumber(account.getPhoneNumber())
-                .setCreationDate(account.getCreationDate());
-    }
+    AccountInfo toAccountInfo(Account account);
 
-    public Account toAccount(AccountInfo accountInfo) {
-        return new Account()
-                .setFirstName(accountInfo.getFirstName())
-                .setLastName(accountInfo.getLastName())
-                .setEmail(accountInfo.getEmail())
-                .setPhoneNumber(accountInfo.getPhoneNumber())
-                .setCreationDate(accountInfo.getCreationDate());
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "tokens", ignore = true)
+    Account toAccount(AccountInfo accountInfo);
 }

@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -23,6 +24,7 @@ public class AccountService {
     @CacheEvict(value = "accounts", allEntries = true)
     @CachePut(value = "account", key = "#account.email")
     public Optional<Account> save(Account account) {
+        account.setCreationDate(LocalDateTime.now());
         return optional(repository.save(account));
     }
 
