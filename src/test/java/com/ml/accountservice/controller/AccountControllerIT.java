@@ -1,9 +1,8 @@
 package com.ml.accountservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ml.accountservice.dto.AccountField;
-import com.ml.accountservice.dto.AccountInfo;
-import com.ml.accountservice.dto.AccountRequest;
+import com.ml.accountservice.dto.*;
+import com.ml.accountservice.model.TokenType;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -43,7 +42,7 @@ class AccountControllerIT {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.path").value("/api/v1/account"))
-                .andExpect(jsonPath("$.message").value("Failed to get account data"))
+                .andExpect(jsonPath("$.message").value("Failed to find account"))
                 .andExpect(jsonPath("$.statusCode").value(400))
                 .andDo(document("{method-name}"));
     }
@@ -58,7 +57,7 @@ class AccountControllerIT {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.path").value("/api/v1/account"))
-                .andExpect(jsonPath("$.message").value("Failed to get account data"))
+                .andExpect(jsonPath("$.message").value("Failed to find account"))
                 .andExpect(jsonPath("$.statusCode").value(400))
                 .andDo(document("{method-name}"));
     }
@@ -82,7 +81,9 @@ class AccountControllerIT {
                 .andExpect(jsonPath("$.lastName").value("Lustig"))
                 .andExpect(jsonPath("$.email").value("meir@gmail.com"))
                 .andExpect(jsonPath("$.phoneNumber").value("480-617-6699"))
+                .andExpect(jsonPath("$.updateDate").isNotEmpty())
                 .andExpect(jsonPath("$.creationDate").isNotEmpty())
+                .andExpect(jsonPath("$.version").value("0"))
                 .andDo(document("{method-name}"));
     }
 
@@ -120,7 +121,9 @@ class AccountControllerIT {
                 .andExpect(jsonPath("$.lastName").value("Lustig"))
                 .andExpect(jsonPath("$.email").value("meir@gmail.com"))
                 .andExpect(jsonPath("$.phoneNumber").value("480-617-6699"))
+                .andExpect(jsonPath("$.updateDate").isNotEmpty())
                 .andExpect(jsonPath("$.creationDate").isNotEmpty())
+                .andExpect(jsonPath("$.version").value("0"))
                 .andDo(document("{method-name}"));
     }
 
@@ -137,7 +140,42 @@ class AccountControllerIT {
                 .andExpect(jsonPath("$.lastName").value("Lustig"))
                 .andExpect(jsonPath("$.email").value("meir@gmail.com"))
                 .andExpect(jsonPath("$.phoneNumber").value("480-617-6699"))
+                .andExpect(jsonPath("$.updateDate").isNotEmpty())
                 .andExpect(jsonPath("$.creationDate").isNotEmpty())
+                .andExpect(jsonPath("$.version").value("0"))
+                .andDo(document("{method-name}"));
+    }
+
+    @Test
+    @Order(7)
+    void updateToken() throws Exception {
+        TokenInfo tokenInfo = new TokenInfo("TOKENXX001", "bank-service",
+                TokenType._2FA, false, LocalDateTime.now());
+        TokenUpdateRequest request = new TokenUpdateRequest("480-617-6699",
+                AccountField.PHONE_NUMBER, tokenInfo);
+        mockMvc.perform(patch("/api/v1/account/update-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.firstName").value("Meir"))
+                .andExpect(jsonPath("$.lastName").value("Lustig"))
+                .andExpect(jsonPath("$.email").value("meir@gmail.com"))
+                .andExpect(jsonPath("$.phoneNumber").value("480-617-6699"))
+                .andExpect(jsonPath("$.updateDate").isNotEmpty())
+                .andExpect(jsonPath("$.creationDate").isNotEmpty())
+                .andExpect(jsonPath("$.version").value("1"))
+                .andDo(document("{method-name}"));
+    }
+
+    @Test
+    @Order(8)
+    void deleteAccount() throws Exception {
+        AccountRequest request = new AccountRequest("meir@gmail.com", AccountField.EMAIL);
+        mockMvc.perform(delete("/api/v1/account")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
                 .andDo(document("{method-name}"));
     }
 }

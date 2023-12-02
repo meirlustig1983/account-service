@@ -3,9 +3,6 @@ package com.ml.accountservice.controller;
 import com.ml.accountservice.dto.AccountInfo;
 import com.ml.accountservice.dto.AccountRequest;
 import com.ml.accountservice.dto.TokenUpdateRequest;
-import com.ml.accountservice.exceptions.CreationDataException;
-import com.ml.accountservice.exceptions.InternalServerException;
-import com.ml.accountservice.exceptions.UpdateDataException;
 import com.ml.accountservice.manager.AccountManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +21,7 @@ public class AccountController {
 
     @PostMapping("/registration")
     public ResponseEntity<AccountInfo> createAccount(@RequestBody AccountInfo accountInfo) {
-
-        AccountInfo updatedAccountInfo = manager.createAccount(accountInfo);
-        if (updatedAccountInfo != null) {
-            return ResponseEntity.ok(updatedAccountInfo);
-        } else {
-            throw new CreationDataException();
-        }
+        return ResponseEntity.ok(manager.createAccount(accountInfo));
     }
 
     @GetMapping
@@ -40,22 +31,12 @@ public class AccountController {
             case EMAIL -> account = manager.getAccountByEmail(request.value());
             case PHONE_NUMBER -> account = manager.getAccountByPhoneNumber(request.value());
         }
-
-        if (account != null) {
-            return ResponseEntity.ok(account);
-        } else {
-            throw new InternalServerException();
-        }
+        return ResponseEntity.ok(account);
     }
 
     @PatchMapping("/update-token")
     public ResponseEntity<AccountInfo> updateToken(@RequestBody TokenUpdateRequest request) {
-        AccountInfo updatedAccountInfo = manager.updateToken(request.value(), request.field(), request.tokenInfo());
-        if (updatedAccountInfo != null) {
-            return ResponseEntity.ok(updatedAccountInfo);
-        } else {
-            throw new UpdateDataException();
-        }
+        return ResponseEntity.ok(manager.updateToken(request.value(), request.field(), request.tokenInfo()));
     }
 
     @DeleteMapping

@@ -3,6 +3,9 @@ package com.ml.accountservice.manager;
 import com.ml.accountservice.dto.AccountField;
 import com.ml.accountservice.dto.AccountInfo;
 import com.ml.accountservice.dto.TokenInfo;
+import com.ml.accountservice.exceptions.AccountNotFoundException;
+import com.ml.accountservice.exceptions.CreationAccountException;
+import com.ml.accountservice.exceptions.UpdateAccountException;
 import com.ml.accountservice.mapper.AccountMapper;
 import com.ml.accountservice.mapper.TokenMapper;
 import com.ml.accountservice.model.Account;
@@ -26,8 +29,7 @@ public class AccountManager {
     private final TokenMapper tokenMapper;
 
     @Autowired
-    public AccountManager(AccountService service,
-                          AccountMapper accountMapper, TokenMapper tokenMapper) {
+    public AccountManager(AccountService service, AccountMapper accountMapper, TokenMapper tokenMapper) {
         this.service = service;
         this.accountMapper = accountMapper;
         this.tokenMapper = tokenMapper;
@@ -36,17 +38,17 @@ public class AccountManager {
     public AccountInfo createAccount(AccountInfo accountInfo) {
         Account account = accountMapper.toAccount(accountInfo);
         Optional<Account> optional = service.save(account);
-        return optional.map(accountMapper::toAccountInfo).orElse(null);
+        return optional.map(accountMapper::toAccountInfo).orElseThrow(CreationAccountException::new);
     }
 
     public AccountInfo getAccountByEmail(String email) {
         Optional<Account> optional = service.getAccountByEmail(email);
-        return optional.map(accountMapper::toAccountInfo).orElse(null);
+        return optional.map(accountMapper::toAccountInfo).orElseThrow(AccountNotFoundException::new);
     }
 
     public AccountInfo getAccountByPhoneNumber(String phoneNumber) {
         Optional<Account> optional = service.getAccountByPhoneNumber(phoneNumber);
-        return optional.map(accountMapper::toAccountInfo).orElse(null);
+        return optional.map(accountMapper::toAccountInfo).orElseThrow(AccountNotFoundException::new);
     }
 
     public AccountInfo updateToken(String value, AccountField field, TokenInfo tokenInfo) {
@@ -62,9 +64,9 @@ public class AccountManager {
             token.setCreationDate(LocalDateTime.now());
             updateToken(account, token);
             Optional<Account> optionalUpdated = service.save(account);
-            return optionalUpdated.map(accountMapper::toAccountInfo).orElse(null);
+            return optionalUpdated.map(accountMapper::toAccountInfo).orElseThrow(UpdateAccountException::new);
         } else {
-            return null;
+            throw new AccountNotFoundException();
         }
     }
 
@@ -78,6 +80,8 @@ public class AccountManager {
         if (optional.isPresent()) {
             Account account = optional.get();
             service.delete(account);
+        } else {
+            throw new AccountNotFoundException();
         }
     }
 
