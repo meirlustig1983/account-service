@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,9 +12,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Document
-@Accessors(chain = true)
 @Data
+@Accessors(chain = true)
+@Document(collection = "account")
 public class Account implements Serializable {
 
     @Id
@@ -32,5 +33,11 @@ public class Account implements Serializable {
     private List<Token> tokens;
 
     @CreatedDate
+    private LocalDateTime updateDate;
+
+    @CreatedDate
     private LocalDateTime creationDate;
+
+    @Version
+    private Long version;
 }
