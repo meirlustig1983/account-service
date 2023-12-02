@@ -15,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class AccountManager {
@@ -86,8 +84,8 @@ public class AccountManager {
     }
 
     private void updateToken(Account account, Token token) {
-        List<Token> tokenList = account.getTokens();
-        List<Token> newList = new ArrayList<>();
+        Set<Token> tokenList = account.getTokens();
+        Set<Token> newList = new HashSet<>();
         newList.add(token);
 
         if (tokenList == null) {
