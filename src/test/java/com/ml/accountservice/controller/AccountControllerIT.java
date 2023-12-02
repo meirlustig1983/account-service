@@ -43,7 +43,7 @@ class AccountControllerIT {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.path").value("/api/v1/account"))
-                .andExpect(jsonPath("$.message").value("Failed to get account data"))
+                .andExpect(jsonPath("$.message").value("Failed to find account"))
                 .andExpect(jsonPath("$.statusCode").value(400))
                 .andDo(document("{method-name}"));
     }
@@ -58,7 +58,7 @@ class AccountControllerIT {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.path").value("/api/v1/account"))
-                .andExpect(jsonPath("$.message").value("Failed to get account data"))
+                .andExpect(jsonPath("$.message").value("Failed to find account"))
                 .andExpect(jsonPath("$.statusCode").value(400))
                 .andDo(document("{method-name}"));
     }
@@ -82,7 +82,9 @@ class AccountControllerIT {
                 .andExpect(jsonPath("$.lastName").value("Lustig"))
                 .andExpect(jsonPath("$.email").value("meir@gmail.com"))
                 .andExpect(jsonPath("$.phoneNumber").value("480-617-6699"))
+                .andExpect(jsonPath("$.updateDate").isNotEmpty())
                 .andExpect(jsonPath("$.creationDate").isNotEmpty())
+                .andExpect(jsonPath("$.version").value("0"))
                 .andDo(document("{method-name}"));
     }
 
@@ -120,7 +122,9 @@ class AccountControllerIT {
                 .andExpect(jsonPath("$.lastName").value("Lustig"))
                 .andExpect(jsonPath("$.email").value("meir@gmail.com"))
                 .andExpect(jsonPath("$.phoneNumber").value("480-617-6699"))
+                .andExpect(jsonPath("$.updateDate").isNotEmpty())
                 .andExpect(jsonPath("$.creationDate").isNotEmpty())
+                .andExpect(jsonPath("$.version").value("0"))
                 .andDo(document("{method-name}"));
     }
 
@@ -137,7 +141,9 @@ class AccountControllerIT {
                 .andExpect(jsonPath("$.lastName").value("Lustig"))
                 .andExpect(jsonPath("$.email").value("meir@gmail.com"))
                 .andExpect(jsonPath("$.phoneNumber").value("480-617-6699"))
+                .andExpect(jsonPath("$.updateDate").isNotEmpty())
                 .andExpect(jsonPath("$.creationDate").isNotEmpty())
+                .andExpect(jsonPath("$.version").value("0"))
                 .andDo(document("{method-name}"));
     }
 }
