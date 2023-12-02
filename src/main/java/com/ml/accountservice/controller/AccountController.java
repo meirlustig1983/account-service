@@ -57,4 +57,10 @@ public class AccountController {
             throw new UpdateDataException();
         }
     }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAccount(@RequestBody AccountRequest request) {
+        manager.deleteAccount(request.value(), request.field());
+        return ResponseEntity.ok().build();
+    }
 }
