@@ -17,5 +17,9 @@ public class AccountInfo {
 
     private String phoneNumber;
 
+    private LocalDateTime updateDate;
+
     private LocalDateTime creationDate;
+
+    private Long version;
 }

@@ -2,8 +2,10 @@ package com.ml.accountservice.controller;
 
 import com.ml.accountservice.dto.AccountInfo;
 import com.ml.accountservice.dto.AccountRequest;
+import com.ml.accountservice.dto.TokenUpdateRequest;
 import com.ml.accountservice.exceptions.CreationDataException;
 import com.ml.accountservice.exceptions.InternalServerException;
+import com.ml.accountservice.exceptions.UpdateDataException;
 import com.ml.accountservice.manager.AccountManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +45,16 @@ public class AccountController {
             return ResponseEntity.ok(account);
         } else {
             throw new InternalServerException();
+        }
+    }
+
+    @PatchMapping("/update-token")
+    public ResponseEntity<AccountInfo> updateToken(@RequestBody TokenUpdateRequest request) {
+        AccountInfo updatedAccountInfo = manager.updateToken(request.value(), request.field(), request.tokenInfo());
+        if (updatedAccountInfo != null) {
+            return ResponseEntity.ok(updatedAccountInfo);
+        } else {
+            throw new UpdateDataException();
         }
     }
 }

@@ -4,12 +4,12 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-
-@Accessors(chain = true)
 @Data
-public class Token {
+@Accessors(chain = true)
+public class Token implements Serializable {
 
     private String token;
 
@@ -18,6 +18,8 @@ public class Token {
     private TokenType type;
 
     private boolean active;
+
+    private LocalDateTime expirationDate;
 
     @CreatedDate
     private LocalDateTime creationDate;
