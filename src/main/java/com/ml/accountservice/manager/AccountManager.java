@@ -68,6 +68,19 @@ public class AccountManager {
         }
     }
 
+    public void deleteAccount(String value, AccountField field) {
+        Optional<Account> optional = Optional.empty();
+        switch (field) {
+            case EMAIL -> optional = service.getAccountByEmail(value);
+            case PHONE_NUMBER -> optional = service.getAccountByPhoneNumber(value);
+        }
+
+        if (optional.isPresent()) {
+            Account account = optional.get();
+            service.delete(account);
+        }
+    }
+
     private void updateToken(Account account, Token token) {
         List<Token> tokenList = account.getTokens();
         List<Token> newList = new ArrayList<>();

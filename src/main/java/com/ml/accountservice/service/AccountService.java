@@ -4,12 +4,11 @@ import com.ml.accountservice.model.Account;
 import com.ml.accountservice.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -32,10 +31,16 @@ public class AccountService {
         account.setUpdateDate(LocalDateTime.now());
         Optional<Account> savedAccount = optional(repository.save(account));
 
-        savedAccount.ifPresent(saved -> cacheManager.getCache("account").put(saved.getEmail(), saved));
-        savedAccount.ifPresent(saved -> cacheManager.getCache("account").put(saved.getPhoneNumber(), saved));
+        savedAccount.ifPresent(saved -> Objects.requireNonNull(cacheManager.getCache("account")).put(saved.getEmail(), saved));
+        savedAccount.ifPresent(saved -> Objects.requireNonNull(cacheManager.getCache("account")).put(saved.getPhoneNumber(), saved));
 
         return savedAccount;
+    }
+
+    public void delete(Account account) {
+        repository.delete(account);
+        Objects.requireNonNull(cacheManager.getCache("account")).evictIfPresent(account.getEmail());
+        Objects.requireNonNull(cacheManager.getCache("account")).evictIfPresent(account.getPhoneNumber());
     }
 
     @Cacheable(value = "account", key = "#email", unless = "#result == null")
