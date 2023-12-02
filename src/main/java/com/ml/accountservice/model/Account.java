@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Accessors(chain = true)
@@ -30,7 +30,7 @@ public class Account implements Serializable {
     @Indexed(unique = true)
     private String phoneNumber;
 
-    private List<Token> tokens;
+    private Set<Token> tokens;
 
     @CreatedDate
     private LocalDateTime updateDate;
