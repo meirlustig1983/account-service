@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -17,7 +19,13 @@ import static org.mockito.Mockito.*;
 class AccountServiceTest {
 
     @Mock
+    private Cache cache;
+
+    @Mock
     private AccountRepository repository;
+
+    @Mock
+    private CacheManager cacheManager;
 
     @InjectMocks
     private AccountService service;
@@ -34,6 +42,7 @@ class AccountServiceTest {
                 .setCreationDate(LocalDateTime.now());
 
         when(repository.save(account)).thenReturn(account);
+        when(cacheManager.getCache("account")).thenReturn(cache);
 
         Optional<Account> result = service.save(account);
 
@@ -46,7 +55,28 @@ class AccountServiceTest {
         assertThat(result.get().getPhoneNumber()).isEqualTo("phone");
 
         verify(repository).save(account);
-        verifyNoMoreInteractions(repository);
+        verify(cacheManager, times(2)).getCache("account");
+        verifyNoMoreInteractions(repository, cacheManager);
+    }
+
+    @Test
+    public void delete() {
+
+        Account account = new Account()
+                .setId("id")
+                .setFirstName("first")
+                .setLastName("last")
+                .setEmail("email")
+                .setPhoneNumber("phone")
+                .setCreationDate(LocalDateTime.now());
+
+        when(cacheManager.getCache("account")).thenReturn(cache);
+
+        service.delete(account);
+
+        verify(repository).delete(account);
+        verify(cacheManager, times(2)).getCache("account");
+        verifyNoMoreInteractions(repository, cacheManager);
     }
 
     @Test
@@ -68,7 +98,7 @@ class AccountServiceTest {
         assertThat(result.isPresent()).isEqualTo(false);
 
         verify(repository).save(account);
-        verifyNoMoreInteractions(repository);
+        verifyNoMoreInteractions(repository, cacheManager);
     }
 
     @Test
@@ -95,7 +125,7 @@ class AccountServiceTest {
         assertThat(result.get().getPhoneNumber()).isEqualTo("phone");
 
         verify(repository).findAccountByEmail("email");
-        verifyNoMoreInteractions(repository);
+        verifyNoMoreInteractions(repository, cacheManager);
     }
 
     @Test
@@ -109,7 +139,7 @@ class AccountServiceTest {
         assertThat(result.isPresent()).isEqualTo(false);
 
         verify(repository).findAccountByEmail("email");
-        verifyNoMoreInteractions(repository);
+        verifyNoMoreInteractions(repository, cacheManager);
     }
 
     @Test
@@ -136,7 +166,7 @@ class AccountServiceTest {
         assertThat(result.get().getPhoneNumber()).isEqualTo("phone");
 
         verify(repository).findAccountByPhoneNumber("phone");
-        verifyNoMoreInteractions(repository);
+        verifyNoMoreInteractions(repository, cacheManager);
     }
 
     @Test
@@ -150,6 +180,6 @@ class AccountServiceTest {
         assertThat(result.isPresent()).isEqualTo(false);
 
         verify(repository).findAccountByPhoneNumber("phone");
-        verifyNoMoreInteractions(repository);
+        verifyNoMoreInteractions(repository, cacheManager);
     }
 }
