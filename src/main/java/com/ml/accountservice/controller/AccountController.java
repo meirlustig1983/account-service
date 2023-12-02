@@ -3,9 +3,9 @@ package com.ml.accountservice.controller;
 import com.ml.accountservice.dto.AccountInfo;
 import com.ml.accountservice.dto.AccountRequest;
 import com.ml.accountservice.dto.TokenUpdateRequest;
-import com.ml.accountservice.exceptions.CreationDataException;
+import com.ml.accountservice.exceptions.CreationAccountException;
 import com.ml.accountservice.exceptions.InternalServerException;
-import com.ml.accountservice.exceptions.UpdateDataException;
+import com.ml.accountservice.exceptions.UpdateAccountException;
 import com.ml.accountservice.manager.AccountManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +29,7 @@ public class AccountController {
         if (updatedAccountInfo != null) {
             return ResponseEntity.ok(updatedAccountInfo);
         } else {
-            throw new CreationDataException();
+            throw new CreationAccountException();
         }
     }
 
@@ -54,7 +54,7 @@ public class AccountController {
         if (updatedAccountInfo != null) {
             return ResponseEntity.ok(updatedAccountInfo);
         } else {
-            throw new UpdateDataException();
+            throw new UpdateAccountException();
         }
     }
 

@@ -3,7 +3,7 @@ package com.ml.accountservice.controller;
 import com.ml.accountservice.dto.AccountField;
 import com.ml.accountservice.dto.AccountInfo;
 import com.ml.accountservice.dto.AccountRequest;
-import com.ml.accountservice.exceptions.CreationDataException;
+import com.ml.accountservice.exceptions.CreationAccountException;
 import com.ml.accountservice.exceptions.InternalServerException;
 import com.ml.accountservice.manager.AccountManager;
 import org.junit.jupiter.api.Test;
@@ -59,7 +59,7 @@ class AccountControllerTest {
 
         when(manager.createAccount(accountInfo)).thenReturn(null);
 
-        assertThrows(CreationDataException.class, () -> controller.createAccount(accountInfo));
+        assertThrows(CreationAccountException.class, () -> controller.createAccount(accountInfo));
 
         verify(manager).createAccount(accountInfo);
         verifyNoMoreInteractions(manager);

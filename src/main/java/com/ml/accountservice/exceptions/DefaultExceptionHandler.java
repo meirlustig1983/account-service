@@ -11,16 +11,23 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class DefaultExceptionHandler {
 
-    @ExceptionHandler(CreationDataException.class)
+    @ExceptionHandler(AccountNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleCreationDataException(CreationDataException e, HttpServletRequest request) {
+    public ApiError handleAccountNotFoundException(AccountNotFoundException e, HttpServletRequest request) {
         log.error("Unhandled exception occurred. ", e);
         return createApiError(request, e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
-    @ExceptionHandler(UpdateDataException.class)
+    @ExceptionHandler(CreationAccountException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleUpdateDataException(UpdateDataException e, HttpServletRequest request) {
+    public ApiError handleCreationDataException(CreationAccountException e, HttpServletRequest request) {
+        log.error("Unhandled exception occurred. ", e);
+        return createApiError(request, e.getMessage(), HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ExceptionHandler(UpdateAccountException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleUpdateDataException(UpdateAccountException e, HttpServletRequest request) {
         log.error("Unhandled exception occurred. ", e);
         return createApiError(request, e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
