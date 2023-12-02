@@ -18,6 +18,13 @@ public class DefaultExceptionHandler {
         return createApiError(request, e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
+    @ExceptionHandler(UpdateDataException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleUpdateDataException(UpdateDataException e, HttpServletRequest request) {
+        log.error("Unhandled exception occurred. ", e);
+        return createApiError(request, e.getMessage(), HttpStatus.BAD_REQUEST.value());
+    }
+
     @ExceptionHandler(InternalServerException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleInternalServerException(InternalServerException e, HttpServletRequest request) {
