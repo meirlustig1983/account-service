@@ -1,10 +1,8 @@
 package com.ml.accountservice.controller;
 
-import com.ml.accountservice.dto.AccountField;
-import com.ml.accountservice.dto.AccountInfo;
-import com.ml.accountservice.dto.AccountRequest;
+import com.ml.accountservice.dto.*;
+import com.ml.accountservice.exceptions.AccountNotFoundException;
 import com.ml.accountservice.exceptions.CreationAccountException;
-import com.ml.accountservice.exceptions.InternalServerException;
 import com.ml.accountservice.manager.AccountManager;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,6 +19,18 @@ import static org.mockito.Mockito.*;
 
 @MockitoSettings
 class AccountControllerTest {
+
+    @Mock
+    private TokenInfo tokenInfo;
+
+    @Mock
+    private TokenUpdateRequest tokenUpdateRequest;
+
+    @Mock
+    private AccountRequest accountRequest;
+
+    @Mock
+    private AccountInfo accountInfo;
 
     @Mock
     private AccountManager manager;
@@ -57,7 +67,7 @@ class AccountControllerTest {
                 .setPhoneNumber("phone")
                 .setCreationDate(LocalDateTime.now());
 
-        when(manager.createAccount(accountInfo)).thenReturn(null);
+        when(manager.createAccount(accountInfo)).thenThrow(CreationAccountException.class);
 
         assertThrows(CreationAccountException.class, () -> controller.createAccount(accountInfo));
 
@@ -114,9 +124,9 @@ class AccountControllerTest {
     public void getAccountByEmail_ManagerFailed() {
         AccountRequest request = new AccountRequest("email", AccountField.EMAIL);
 
-        when(manager.getAccountByEmail("email")).thenReturn(null);
+        when(manager.getAccountByEmail("email")).thenThrow(AccountNotFoundException.class);
 
-        assertThrows(InternalServerException.class, () -> controller.getAccount(request));
+        assertThrows(AccountNotFoundException.class, () -> controller.getAccount(request));
 
         verify(manager).getAccountByEmail("email");
         verifyNoMoreInteractions(manager);
@@ -126,12 +136,64 @@ class AccountControllerTest {
     public void getAccountByPhoneNumber_ManagerFailed() {
         AccountRequest request = new AccountRequest("phone", AccountField.PHONE_NUMBER);
 
-        when(manager.getAccountByPhoneNumber("phone")).thenReturn(null);
+        when(manager.getAccountByPhoneNumber("phone")).thenThrow(AccountNotFoundException.class);
 
-        assertThrows(InternalServerException.class, () -> controller.getAccount(request));
+        assertThrows(AccountNotFoundException.class, () -> controller.getAccount(request));
 
         verify(manager).getAccountByPhoneNumber("phone");
         verifyNoMoreInteractions(manager);
     }
 
+    @Test
+    public void updateToken() {
+        when(tokenUpdateRequest.value()).thenReturn("email");
+        when(tokenUpdateRequest.field()).thenReturn(AccountField.EMAIL);
+        when(tokenUpdateRequest.tokenInfo()).thenReturn(tokenInfo);
+        when(manager.updateToken("email", AccountField.EMAIL, tokenInfo)).thenReturn(accountInfo);
+
+        ResponseEntity<AccountInfo> result = controller.updateToken(tokenUpdateRequest);
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody()).isEqualTo(accountInfo);
+
+        verify(manager).updateToken("email", AccountField.EMAIL, tokenInfo);
+        verifyNoMoreInteractions(manager);
+    }
+
+    @Test
+    public void updateToken_ManagerFailed() {
+        when(tokenUpdateRequest.value()).thenReturn("email");
+        when(tokenUpdateRequest.field()).thenReturn(AccountField.EMAIL);
+        when(tokenUpdateRequest.tokenInfo()).thenReturn(tokenInfo);
+        when(manager.updateToken("email", AccountField.EMAIL, tokenInfo)).thenThrow(AccountNotFoundException.class);
+
+        assertThrows(AccountNotFoundException.class, () -> controller.updateToken(tokenUpdateRequest));
+
+        verify(manager).updateToken("email", AccountField.EMAIL, tokenInfo);
+        verifyNoMoreInteractions(manager);
+    }
+
+    @Test
+    public void deleteAccount() {
+        when(accountRequest.value()).thenReturn("email");
+        when(accountRequest.field()).thenReturn(AccountField.EMAIL);
+
+        controller.deleteAccount(accountRequest);
+
+        verify(manager).deleteAccount("email", AccountField.EMAIL);
+        verifyNoMoreInteractions(manager);
+    }
+
+    @Test
+    public void deleteAccount_ManagerFailed() {
+        when(accountRequest.value()).thenReturn("email");
+        when(accountRequest.field()).thenReturn(AccountField.EMAIL);
+
+        doThrow(AccountNotFoundException.class).when(manager).deleteAccount("email", AccountField.EMAIL);
+
+        assertThrows(AccountNotFoundException.class, () -> controller.deleteAccount(accountRequest));
+
+        verify(manager).deleteAccount("email", AccountField.EMAIL);
+        verifyNoMoreInteractions(manager);
+    }
 }
