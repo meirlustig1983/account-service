@@ -8,7 +8,7 @@ spring:
       host: localhost
       port: 27017
       database: mainDb
-      uri: mongodb://localhost:27017/mainDb
+      uri: mongodb://localhost:27017/testDb
   kafka:
     producer:
       topic: 'account-token-cleanup'
