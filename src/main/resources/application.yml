@@ -9,6 +9,12 @@ spring:
       port: 27017
       database: mainDb
       uri: mongodb://localhost:27017/mainDb
+  kafka:
+    producer:
+      topic: 'account-token-cleanup'
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 server:
   port: 8501

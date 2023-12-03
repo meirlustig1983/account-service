@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -51,6 +52,10 @@ public class AccountService {
     @Cacheable(value = "account", key = "#phoneNumber", unless = "#result == null")
     public Optional<Account> getAccountByPhoneNumber(String phoneNumber) {
         return optional(repository.findAccountByPhoneNumber(phoneNumber));
+    }
+
+    public List<Account> getAll() {
+        return repository.findAll();
     }
 
     private Optional<Account> optional(Account account) {
