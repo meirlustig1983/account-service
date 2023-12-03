@@ -29,7 +29,7 @@ public class AccountCleanUpScheduler {
     }
 
     @Scheduled(fixedRate = 300000) // Run every 5 minutes
-    public void myScheduledTask() {
+    public void apply() {
         log.info("Scheduled task executed, type: 'AccountCleanUpScheduler', at: {}", LocalDateTime.now());
         accountService.getAll().forEach(account -> {
             log.info("Send message, topic: '{}', type: 'ACCOUNT', id: '{}'", topic, account.getId());
