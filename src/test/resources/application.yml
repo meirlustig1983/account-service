@@ -1,17 +1,23 @@
 spring:
   profiles:
-    active: 'test'
+    active: 'dev'
   application:
     name: account-service
   data:
     mongodb:
       host: localhost
       port: 27017
-      database: testDb
+      database: mainDb
       uri: mongodb://localhost:27017/testDb
+  kafka:
+    producer:
+      topic: 'account-token-cleanup'
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 server:
-  port: 8511
+  port: 8501
   compression:
     enabled: true
     mime-types: application/json

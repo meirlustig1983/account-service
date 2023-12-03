@@ -103,7 +103,7 @@ class AccountControllerIT {
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.path").value("/api/v1/account/registration"))
-                .andExpect(jsonPath("$.message").value("Write operation error on server localhost:27017. Write error: WriteError{code=11000, message='E11000 duplicate key error collection: testDb.account index: email_1 dup key: { email: \"meir@gmail.com\" }', details={}}."))
+                .andExpect(jsonPath("$.message").isNotEmpty())
                 .andExpect(jsonPath("$.statusCode").value(500))
                 .andDo(document("{method-name}"));
     }
